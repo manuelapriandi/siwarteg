@@ -5,7 +5,7 @@
                 <div class="">
                     <img class="rounded-circle" src="public/template/img/Siwarteg.png" alt="...">
                 </div>
-                <div class="sidebar-brand-text mx-3">SiWarTeg <sup>2</sup></div>
+                <div class="sidebar-brand-text mx-3">SiWarTeg <sup></sup></div>
             </a>
 
             <!-- Divider -->
