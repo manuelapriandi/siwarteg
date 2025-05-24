@@ -2,8 +2,8 @@
 
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-                <div class="">
-                    <img class="rounded-circle" src="public/template/img/Siwarteg.png" alt="...">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    {{-- <i class="fas fa-laugh-wink"></i> --}}
                 </div>
                 <div class="sidebar-brand-text mx-3">SiWarTeg <sup></sup></div>
             </a>
@@ -12,10 +12,10 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
-                <a class="nav-link" href="index.html">
+            <li class="nav-item {{ request()->is('dasbor') ? 'active' : '' }}">
+                <a class="nav-link" href="/dasbor">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dasborr</span></a>
+                    <span>Dasbor</span></a>
             </li>
 
             <!-- Divider -->
@@ -27,7 +27,7 @@
             </div>
 
             <!-- Nav Item - Tables -->
-            <li class="nav-item">
+            <li class="nav-item {{ request()->is('resident*') ? 'active' : '' }}">
                 <a class="nav-link" href="/resident">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Warga</span></a>
