@@ -5,6 +5,10 @@
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Tambah Warga</h1>
         </div>    
+        {{-- @if ($errors->any())
+            @dd($errors->all())
+        @endif --}}
+       
 
         <div class="row">
             <div class="col">
@@ -15,58 +19,127 @@
                         <div class="card-body">
                             <div class="form-group mb-3">
                                 <label for="nik">NIK</label>
-                                <input type="number" inputmode="numeric" name="nik" id="nik" class="form-control">
+                                <input type="number" inputmode="numeric" name="nik" id="nik" class="form-control @error('nik') is-invalid @enderror" value="{{ old ('nik') }}">
+                                @error('nik')
+                                    <span class="invalid-feedback">
+                                        Tolong isi NIK dengan benar (NIK hanya bisa diketik dengan angka).
+                                    </span>
+                                @enderror
                             </div>
                             <div class="form-group mb-3">
                                 <label for="nama">Nama Lengkap</label>
-                                <input type="text" name="nama" id="nama" class="form-control">
+                                <input type="text" name="nama" id="nama" class="form-control @error('nama') is-invalid @enderror" value="{{ old ('nama') }}">
+                                @error('nama')
+                                    <span class="invalid-feedback">
+                                        Boleh tolong isi nama dengan lengkap/benar?
+                                    </span>
+                                @enderror
                             </div>
                             <div class="form-group mb-3">
                                 <label for="jk">Jenis Kelamin</label>
-                                <select name="jk" id="jk" class="form-control">
-                                    <option value="Laki-laki">Laki-laki</option>
-                                    <option value="Perempuan">Perempuan</option>
+                                <select name="jk" id="jk" class="form-control @error('jk') is-invalid @enderror">
+                                    @foreach ([
+                                        (object)["label" => "Laki-laki",
+                                        "value" => "Laki-laki"],
+                                        (object)["label" => "Perempuan",
+                                        "value" => "Perempuan"],
+                                    ] as $item)
+                                        <option value="{{$item->value}}" @selected(old('jk') == $item->value)>{{$item->label}}</option>    
+                                    @endforeach
+                                    
                                 </select>
                             </div>
                             <div class="form-group mb-3">
                                 <label for="tmpt_lahir">Tempat Lahir</label>
-                                <input type="text" name="tmpt_lahir" id="tmpt_lahir" class="form-control">
+                                <input type="text" name="tmpt_lahir" id="tmpt_lahir" class="form-control @error('tmpt_lahir') is-invalid @enderror" value="{{ old ('tmpt_lahir') }}">
+                                @error('tmpt_lahir')
+                                    <span class="invalid-feedback">
+                                        Anda bisa mengisi tempat lahir.
+                                    </span>
+                                @enderror
                             </div>
                             <div class="form-group mb-3">
                                 <label for="tgl_lahir">Tanggal Lahir</label>
-                                <input type="date" name="tgl_lahir" id="tgl_lahir" class="form-control">
+                                <input type="date" name="tgl_lahir" id="tgl_lahir" class="form-control @error('tgl_lahir') is-invalid @enderror" value="{{ old ('tgl_lahir') }}">
+                                @error('tgl_lahir')
+                                    <span class="invalid-feedback">
+                                        Anda bisa mengisi tanggal lahir.
+                                    </span>
+                                @enderror
                             </div>
                             <div class="form-group mb-3">
                                 <label for="alamat">Alamat</label>
-                                <textarea name="alamat" id="alamat" cols="30" rows="10" class="form-control"></textarea>
+                                <textarea name="alamat" id="alamat" cols="30" rows="10" class="form-control  @error('alamat') is-invalid @enderror" value="{{ old ('alamat
+                                ') }}"></textarea>
+                                @error('alamat')
+                                    <span class="invalid-feedback">
+                                        Boleh isi alamat Anda?
+                                    </span>
+                                @enderror
                             </div>
                             <div class="form-group mb-3">
                                 <label for="agama">Agama</label>
-                                <input type="text" name="agama" id="agama" class="form-control">
+                                <input type="text" name="agama" id="agama" class="form-control @error('agama') is-invalid @enderror">
+                                @error('agama')
+                                    <span class="invalid-feedback">
+                                        Boleh isi Agama Anda?
+                                    </span>
+                                @enderror
                             </div>
                             <div class="form-group mb-3">
                                 <label for="status_kwn">Status Perkawinan</label>
-                                <select name="status_kwn" id="status_kwn" class="form-control">
-                                    <option value="Belum Menikah">Belum Menikah</option>
-                                    <option value="Menikah">Menikah</option>
-                                    <option value="Cerai">Cerai</option>
-                                    <option value="Bapak/Ibu Tunggal">Bapak/Ibu Tunggal</option>
-                                </select>
+                                <select name="status_kwn" id="status_kwn" class="form-control @error('status_kwn') is-invalid @enderror">
+                                    @foreach ([
+                                        (object)["label" => "Belum Menikah",
+                                        "value" => "Belum Menikah"],
+                                        (object)["label" => "Menikah",
+                                        "value" => "Menikah"],
+                                        (object)["label" => "Cerai",
+                                        "value" => "Cerai"],
+                                        (object)["label" => "Bapak/Ibu Tunggal",
+                                        "value" => "Bapak/Ibu Tunggal"],
+                                    ] as $item)
+                                        <option value="{{$item->value}}" @selected(old('status_kwn') == $item->value)>{{$item->label}}</option>    
+                                    @endforeach
+                                    </select>
+                                @error('status_kwn')
+                                    <span class="invalid-feedback">
+                                        Boleh isi status hubungan Anda?
+                                    </span>
+                                @enderror
                             </div>
                             <div class="form-group mb-3">
                                 <label for="pekerjaan">Pekerjaan</label>
-                                <input type="text" name="pekerjaan" id="pekerjaan" class="form-control">
+                                <input type="text" name="pekerjaan" id="pekerjaan" class="form-control @error('pekerjaan') is-invalid @enderror">
+                                @error('pekerjaan')
+                                    <span class="invalid-feedback">
+                                        Boleh isi pekerjaan Anda?
+                                    </span>
+                                @enderror
                             </div>
                             <div class="form-group mb-3">
                                 <label for="notelp">Nomor Telepon</label>
-                                <input type="text" inputmode="numeric" name="notelp" id="notelp" class="form-control">
+                                <input type="text" inputmode="numeric" name="notelp" id="notelp" class="form-control @error('notelp') is-invalid @enderror">
+                                @error('notelp')
+                                    <span class="invalid-feedback">
+                                        Boleh isi nomor telepon Anda?
+                                    </span>
+                                @enderror
                             </div>
                             <div class="form-group mb-3">
                                 <label for="status">Status Kependudukan</label>
-                                <select name="status" id="status" class="form-control">
-                                    <option value="aktif">Aktif</option>
-                                    <option value="pindah">Pindah</option>
-                                    <option value="meninggal">Meninggal</option>
+                                <select name="status" id="status" class="form-control @error('status') is-invalid @enderror">
+                                    @foreach ([
+                                        (object)["label" => "Aktif",
+                                        "value" => "aktif"],
+                                        (object)["label" => "Pindah",
+                                        "value" => "pindah"],
+                                        (object)["label" => "Meninggal",
+                                        "value" => "meninggal"],
+                                    ] as $item)
+                                        <option value="{{$item->value}}" @selected(old('status') == $item->value)>{{$item->label}}</option>    
+                                    @endforeach
+                                    
                                 </select>
                             </div>
                         </div>
