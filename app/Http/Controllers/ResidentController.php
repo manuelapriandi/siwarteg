@@ -44,10 +44,16 @@ class ResidentController extends Controller
         return redirect('/resident')->with('sukses', 'Berhasil menambahkan data');
     }
 
+    public function edit($id) 
+    {
+        $resident = Resident::findOrFail($id);
+
+        return view('pages.resident.edit', [ 'resident' => $resident, 'id' => $id]);
+    }
 
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
+        $datanyaValid = $request->validate([
             'nik' => ['required', 'min:16', 'max:16'],
             'nama' => ['required', 'max:95'],
             'jk' => ['required', Rule::in(['Laki-laki', 'Perempuan'])],
@@ -62,18 +68,11 @@ class ResidentController extends Controller
 
         ]);    
 
-        Resident::findOrFail($id)->update($request->validated());
+        Resident::findOrFail($id)->update($datanyaValid);
 
         return redirect('/resident')->with('sukses', 'Berhasil mengubah data');
     }
 
-
-    public function edit($id) 
-    {
-        $resident = Resident::findOrFail($id);
-
-        return view('pages.resident.edit', [ 'resident' => $resident,]);
-    }
 
 
     public function destroy($id) 
