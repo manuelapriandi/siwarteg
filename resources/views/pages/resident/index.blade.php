@@ -43,7 +43,7 @@
                                     <td>{{ $item->nik }}</td>
                                     <td>{{ $item->nama }}</td>
                                     <td>{{ $item->jk }}</td>
-                                    <td>{{ $item->tgl_lahir }}, {{ $item->tmpt_lahir }}</td>
+                                    <td>{{ $item->tmpt_lahir }}, {{ $item->tgl_lahir }}</td>
                                     <td>{{ $item->alamat }}</td>
                                     <td>{{ $item->agama }}</td>
                                     <td>{{ $item->status_kwn }}</td>

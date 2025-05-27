@@ -29,12 +29,12 @@
                                 </select>
                             </div>
                             <div class="form-group mb-3">
-                                <label for="tgl_lahir">Tanggal Lahir</label>
-                                <input type="date" name="tgl_lahir" id="tgl_lahir" class="form-control">
-                            </div>
-                            <div class="form-group mb-3">
                                 <label for="tmpt_lahir">Tempat Lahir</label>
                                 <input type="text" name="tmpt_lahir" id="tmpt_lahir" class="form-control">
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="tgl_lahir">Tanggal Lahir</label>
+                                <input type="date" name="tgl_lahir" id="tgl_lahir" class="form-control">
                             </div>
                             <div class="form-group mb-3">
                                 <label for="alamat">Alamat</label>
