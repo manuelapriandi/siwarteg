@@ -15,6 +15,7 @@
                         <table class="table table-responsive table-bordered table-hovered">
                             <thead>
                                 <tr>
+                                    <th>No</th>
                                     <th>NIK</th>
                                     <th>Nama</th>
                                     <th>Jenis Kelamin</th>
@@ -40,6 +41,7 @@
                             <tbody>
                                 @foreach ($residents as $item)
                                  <tr>
+                                    <td>{{ $loop->iteration }}</td>
                                     <td>{{ $item->nik }}</td>
                                     <td>{{ $item->nama }}</td>
                                     <td>{{ $item->jk }}</td>
@@ -52,15 +54,16 @@
                                     <td>{{ $item->status }}</td>
                                     <td>
                                         <div class="d-flex">
-                                            <a href="/resident/{{ $item->id}}" class="d-inline block mr-3 btn btn-sm btn-warning">
+                                            <a href="/resident/{{ $item->id }}" class="d-inline block mr-3 btn btn-sm btn-warning">
                                                 <i class="fas fa-pen"></i>
                                             </a>
-                                            <a href="/resident/{{ $item->id}}" class="btn btn-sm btn-danger">
+                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#konfirmasiDelete-{{ $item->id }}">
                                                 <i class="fas fa-eraser"></i>
-                                            </a>
+                                            </button>
                                         </div>
                                     </td>
                                  </tr>   
+                                 @include('pages.resident.konfirmasi-delete')
                                 @endforeach
                                 
                             </tbody>
