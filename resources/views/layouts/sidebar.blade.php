@@ -1,4 +1,27 @@
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+ @php
+     $menus=[
+        1 => [
+            (object) [
+                'title' => 'Dasbor',
+                'path' => 'dasbor',
+                'icon' => 'fas fa-fw fa-tachometer-alt',
+            ]
+            (object) [
+                'title' => 'Penduduk',
+                'path' => 'penduduk',
+                'icon' => 'fas fa-fw fa-table',
+            ]
+        ]
+        2 => [
+            (object) [
+                'title' => 'Dasbor',
+                'path' => 'dasbor',
+                'icon' => 'fas fa-fw fa-tachometer-alt',
+            ]
+        ]
+     ]
+ @endphp
+ <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
@@ -19,12 +42,13 @@
             </li>
 
             <!-- Divider -->
-            <hr class="sidebar-divider">
+            {{-- <hr class="sidebar-divider"> --}}
 
             <!-- Heading -->
-            <div class="sidebar-heading">
+            {{-- <div class="sidebar-heading">
                 Manajemen Data
-            </div>
+            </div> --}}
+
 
             <!-- Nav Item - Tables -->
             <li class="nav-item {{ request()->is('resident*') ? 'active' : '' }}">

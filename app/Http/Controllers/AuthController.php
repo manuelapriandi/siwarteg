@@ -13,27 +13,34 @@ class AuthController extends Controller
 {
     public function login()
     {
+        if (Auth::check()){
+            return back();
+        }  
         return view('pages.auth.login');
     }
 
     public function authenticate(Request $request)
     {
-    $credentials = $request->validate([
-        'email' => ['required', 'email'],
-        'password' => ['required'],
-    ]);
-
-    if (Auth::attempt($credentials)) {
-        $request->session()->regenerate();
-
-        $user = Auth::user();
-
-        if ($user->status == 'submitted') {
-            Auth::logout(); // optional: logout if not approved
-            return back()->withErrors(['email' => 'Akun Anda masih menunggu persetujuan admin.']);
+        if (Auth::check()){
+            return back();
         }
+        
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
 
-        if ($user->status == 'rejected') {
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+
+            $userStatus = Auth::user()->status;
+
+            if ($userStatus == 'submitted') {
+                Auth::logout(); // optional: logout if not approved
+                return back()->withErrors(['email' => 'Akun Anda masih menunggu persetujuan admin.']);
+            }
+
+        else if ($userStatus == 'rejected') {
             Auth::logout(); // optional: logout if rejected
             return back()->withErrors(['email' => 'Akun Anda ditolak oleh admin.']);
         }
@@ -47,10 +54,17 @@ class AuthController extends Controller
     }
 
     public function registerView(){
+        if (Auth::check()){
+            return back();
+        }
         return view('pages.auth.register');
     }
 
     public function register(Request $request){
+        if (Auth::check()){
+            return back();
+        }
+
         $validated = $request->validate([
             'name' => ['required'],
             'email' => ['required', 'email'],
@@ -70,6 +84,10 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        if (!Auth::check()) {
+            return redirect('/');
+        }
+
         Auth::logout();
     
         $request->session()->invalidate();
