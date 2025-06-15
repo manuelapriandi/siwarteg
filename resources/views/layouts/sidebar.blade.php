@@ -5,22 +5,23 @@
                 'title' => 'Dasbor',
                 'path' => 'dasbor',
                 'icon' => 'fas fa-fw fa-tachometer-alt',
-            ]
+            ],
             (object) [
                 'title' => 'Penduduk',
-                'path' => 'penduduk',
+                'path' => 'resident',
                 'icon' => 'fas fa-fw fa-table',
-            ]
-        ]
+            ],
+        ],
         2 => [
             (object) [
                 'title' => 'Dasbor',
                 'path' => 'dasbor',
                 'icon' => 'fas fa-fw fa-tachometer-alt',
-            ]
-        ]
-     ]
+            ],
+        ],
+];
  @endphp
+
  <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
@@ -35,11 +36,11 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item {{ request()->is('dasbor') ? 'active' : '' }}">
+            {{-- <li class="nav-item {{ request()->is('dasbor') ? 'active' : '' }}">
                 <a class="nav-link" href="/dasbor">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dasbor</span></a>
-            </li>
+            </li> --}}
 
             <!-- Divider -->
             {{-- <hr class="sidebar-divider"> --}}
@@ -51,11 +52,14 @@
 
 
             <!-- Nav Item - Tables -->
-            <li class="nav-item {{ request()->is('resident*') ? 'active' : '' }}">
-                <a class="nav-link" href="/resident">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Warga</span></a>
-            </li>
+            @foreach ($menus[auth()->user()->role_id] as $menu)
+            <li class="nav-item {{ request()->is($menu->path . '*') ? 'active' : '' }}">
+                <a class="nav-link" href="/{{$menu->path}}">
+                    <i class="{{$menu->icon}}"></i>
+                    <span>{{$menu->title}}</span></a>
+            </li>    
+            @endforeach
+            
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
