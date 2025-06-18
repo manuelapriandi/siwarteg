@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ResidentController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [AuthController::class, 'login']);
@@ -20,3 +21,10 @@ Route::get('/resident/{id}', [ResidentController::class, 'edit'])->middleware('r
 Route::post('/resident', [ResidentController::class, 'store'])->middleware('role:Admin');
 Route::put('/resident/{id}', [ResidentController::class, 'update'])->middleware('role:Admin');
 Route::delete('/resident/{id}', [ResidentController::class, 'destroy'])->middleware('role:Admin');
+
+Route::get('/daftar-akun', [UserController::class, 'account_list'])->middleware('role:Admin');
+
+Route::get('/account-request', [UserController::class, 'view_account'])->middleware('role:Admin');
+Route::post('/account-request/approval/{id}', [UserController::class, 'account_approval'])->middleware('role:Admin');
+
+
