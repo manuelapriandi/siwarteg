@@ -27,4 +27,7 @@ Route::get('/daftar-akun', [UserController::class, 'account_list'])->middleware(
 Route::get('/account-request', [UserController::class, 'view_account'])->middleware('role:Admin');
 Route::post('/account-request/approval/{id}', [UserController::class, 'account_approval'])->middleware('role:Admin');
 
-
+Route::get('/profil', [UserController::class, 'profil_view'])->middleware('role:Admin,User');
+Route::post('/profil/{id}', [UserController::class, 'update_profil'])->middleware('role:Admin,User');
+Route::get('/ubah-pw', [UserController::class, 'ubah_pw'])->middleware('role:Admin,User');
+Route::post('/ubah-pw/{id}', [UserController::class, 'ubah_pww'])->middleware('role:Admin,User');

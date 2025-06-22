@@ -11,6 +11,15 @@
           <div class="modal-body">
             <input type="hidden" name="for" value="approve">
             <span>Apakah anda menyetujui akun ini?</span>
+            <div class="form-group mt-3">
+              <label for="resident_id">Pilih Warga</label>
+              <select name="resident_id" id="resident_id" class="form-control">
+                <option value="">Tidak ada</option>
+                @foreach ($residents as $item)
+                <option value="{{$item->id}}">{{$item->nama}}</option>
+                @endforeach
+              </select>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
