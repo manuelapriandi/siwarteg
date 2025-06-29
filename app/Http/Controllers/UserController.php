@@ -11,7 +11,7 @@ use Illuminate\Validation\Rule;
 class UserController extends Controller
 {
     public function view_account(){
-        $users = User::where('status','submitted')->get();
+        $users = User::where('status','submitted')->paginate(5);
         $residents = Resident::where('user_id', null)->get();
 
         return view('pages.account-request.index', [
@@ -47,7 +47,7 @@ class UserController extends Controller
     }
     
     public function account_list(){
-        $users = User::where('role_id', 2)->where('status', '!=', 'submitted')->get();
+        $users = User::where('role_id', 2)->where('status', '!=', 'submitted')->paginate(5);
         return view('pages.account-list.index', [
             'users' => $users,
         ]);
