@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\ResidentController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -31,3 +32,10 @@ Route::get('/profil', [UserController::class, 'profil_view'])->middleware('role:
 Route::post('/profil/{id}', [UserController::class, 'update_profil'])->middleware('role:Admin,User');
 Route::get('/ubah-pw', [UserController::class, 'ubah_pw'])->middleware('role:Admin,User');
 Route::post('/ubah-pw/{id}', [UserController::class, 'ubah_pww'])->middleware('role:Admin,User');
+
+Route::get('/complaint', [ComplaintController::class, 'index'])->middleware('role:Admin,User');
+Route::get('/complaint/create', [ComplaintController::class, 'create'])->middleware('role:User');
+Route::get('/complaint/{id}', [ComplaintController::class, 'edit'])->middleware('role:User');
+Route::post('/complaint', [ComplaintController::class, 'store'])->middleware('role:User');
+Route::put('/complaint/{id}', [ComplaintController::class, 'update'])->middleware('role:User');
+Route::delete('/complaint/{id}', [ComplaintController::class, 'destroy'])->middleware('role:User');

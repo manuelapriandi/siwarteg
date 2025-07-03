@@ -28,6 +28,11 @@
                 'path' => 'dasbor',
                 'icon' => 'fas fa-fw fa-tachometer-alt',
             ],
+            (object) [
+                'title' => 'Pengaduan',
+                'path' => 'complaint',
+                'icon' => 'fas fa-fw fa-scroll',
+            ],
         ],
 ];
  @endphp

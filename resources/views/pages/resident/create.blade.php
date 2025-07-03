@@ -88,7 +88,7 @@
                             </div>
                             <div class="form-group mb-3">
                                 <label for="status_kwn">Status Perkawinan</label>
-                                <select name="status_kwn" id="status_kwn" class="form-control @error('status_kwn') is-invalid @enderror">
+                                {{-- <select name="status_kwn" id="status_kwn" class="form-control @error('status_kwn') is-invalid @enderror">
                                     @foreach ([
                                         (object)["label" => "Belum Menikah",
                                         "value" => "Belum Menikah"],
@@ -98,10 +98,18 @@
                                         "value" => "Cerai"],
                                         (object)["label" => "Bapak/Ibu Tunggal",
                                         "value" => "Bapak/Ibu Tunggal"],
-                                    ] as $item)
+                                    ] as $item);
                                         <option value="{{$item->value}}" @selected(old('status_kwn') == $item->value)>{{$item->label}}</option>    
                                     @endforeach
-                                    </select>
+                                    </select> --}}
+                                <select name="status_kwn" id="status_kwn" class="form-control @error('status_kwn') is-invalid @enderror">
+                                    <option value="" disabled {{ old('status_kwn') ? '' : 'selected' }}>-- Pilih status --</option>
+                                    @foreach (['Belum Menikah','Menikah','Cerai','Bapak/Ibu Tunggal'] as $status)
+                                        <option value="{{ $status }}" @selected(old('status_kwn') == $status)>
+                                            {{ $status }}
+                                        </option>
+                                    @endforeach
+                                </select>
                                 @error('status_kwn')
                                     <span class="invalid-feedback">
                                         Boleh isi status hubungan Anda?
