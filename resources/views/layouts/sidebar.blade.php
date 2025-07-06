@@ -21,6 +21,11 @@
                 'path' => 'account-request',
                 'icon' => 'fas fa-fw fa-question',
             ],
+            (object) [
+                'title' => 'Aduan Warga',
+                'path' => 'complaint',
+                'icon' => 'fas fa-fw fa-scroll',
+            ],
         ],
         2 => [
             (object) [
@@ -44,7 +49,7 @@
                 <div class="sidebar-brand-icon rotate-n-15">
                     {{-- <i class="fas fa-laugh-wink"></i> --}}
                 </div>
-                <div class="sidebar-brand-text mx-3">SiWarTeg <sup></sup></div>
+                <div class="sidebar-brand-text mx-3">SiWarTeg<sup></sup></div>
             </a>
 
             <!-- Divider -->

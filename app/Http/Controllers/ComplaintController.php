@@ -3,18 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\Complaint;
+use App\Models\User;
+use App\Notifications\ComplaintStatusChanged;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class ComplaintController extends Controller
 {
     public function index(){
-        $complaints = Complaint::where('resident_id', Auth::user()->resident->id)->paginate(5);
+        $residentId = Auth::user()->resident->id ?? null;
+        $complaints = Complaint::when (Auth::user()->role_id == \App\Models\Role::ROLE_USER, function ($query) use ($residentId){
+            $query->where('resident_id', $residentId);
+        })->paginate(5);
+
         return view('pages.complaint.index', compact('complaints'));
     }
 
     public function create(){
+        $resident= Auth::user()->resident;
+        if (!$resident){
+            return redirect('/complaint')->with('error', 'Akun anda belum terhubung dengan data warga manapun');
+        }
         return view('pages.complaint.create');
     }
 
@@ -27,8 +38,10 @@ class ComplaintController extends Controller
 
         ]);
 
+        $resident= Auth::user()->resident;
+
         $complaint = new Complaint();
-        $complaint->resident_id = Auth::user()->resident->id;
+        $complaint->resident_id = $resident->id;
         $complaint->title = $request->input('title');
         $complaint->content = $request->input('content');
 
@@ -43,6 +56,10 @@ class ComplaintController extends Controller
     }
 
     public function edit($id){
+        $resident= Auth::user()->resident;
+        if (!$resident){
+            return redirect('/complaint')->with('error', 'Akun anda belum terhubung dengan data warga manapun');
+        }
         $complaint = Complaint::findOrFail($id);
         return view('pages.complaint.edit', compact('complaint'));
     }
@@ -56,8 +73,18 @@ class ComplaintController extends Controller
 
         ]);
 
+        $resident= Auth::user()->resident;
+        if (!$resident){
+            return redirect('/complaint')->with('error', 'Akun anda belum terhubung dengan data warga manapun');
+        }
+
         $complaint = Complaint::findOrFail($id);
-        $complaint->resident_id = Auth::user()->resident->id;
+
+        if($complaint->status != 'baru') {
+            return redirect('/complaint')->with('error',"Gagal mengubah aduan anda, karena status aduan anda sekarang adalah $complaint->status_label");
+        }
+
+        $complaint->resident_id = $resident->id;
         $complaint->title = $request->input('title');
         $complaint->content = $request->input('content');
 
@@ -75,9 +102,40 @@ class ComplaintController extends Controller
     }
 
     public function destroy($id){
+        $resident= Auth::user()->resident;
+        if (!$resident){
+            return redirect('/complaint')->with('error', 'Akun anda belum terhubung dengan data warga manapun');
+        }
         $complaint = Complaint::findOrFail($id);
+
+        if($complaint->status != 'baru') {
+            return redirect('/complaint')->with('error', "Gagal menghapus aduan anda, karena status aduan anda sekarang adalah $complaint->status_label");
+        }
+
         $complaint->delete();
 
         return redirect('/complaint')->with('success', 'Berhasil menghapus aduan');
+    }
+
+    public function update_status(Request $request, $id)
+    {
+        $request->validate([
+            'status' => ['required', Rule::in('baru','diproses','selesai')],
+        ]);
+
+        $resident= Auth::user()->resident;
+        if (Auth::user()->role_id == \App\Models\Role::ROLE_USER && !$resident){
+            return redirect('/complaint')->with('error', 'Akun anda belum terhubung dengan data warga manapun');
+        }
+
+        $complaint = Complaint::findOrFail($id);
+        $oldStatus = $complaint->status_label;
+        $complaint->status = $request->input('status');
+        $complaint->save();
+
+        $newStatus = $complaint->status_label;
+        User::where('id', $complaint->resident->user_id)->firstOrFail()->notify(new ComplaintStatusChanged($complaint, $oldStatus, $newStatus));
+
+        return redirect('/complaint')->with('success', 'Berhasil mengubah status aduan');
     }
 }

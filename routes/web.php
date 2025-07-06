@@ -16,6 +16,25 @@ Route::get('/dasbor', function () {
     return view('pages.dasbor');
 })->middleware('role:Admin,User');
 
+Route::post('/notification/{id}/read', function($id){
+    $notification = \Illuminate\Support\Facades\DB::table('notifications')->where('id', $id);
+    $notification->update([    
+        'read_at' => \Illuminate\Support\Facades\DB::raw('CURRENT_TIMESTAMP'),
+    ]);
+
+    $dataArray = json_decode($notification->firstOrFail()->data, true);
+
+    if (isset($dataArray['complaint_id'])){
+        return redirect('/complaint');
+    }
+
+    return back();
+})->middleware('role:Admin,User');
+
+Route::get('notifications', function(){
+    return view('pages.notifications');
+});
+
 Route::get('/resident', [ResidentController::class, 'index'])->middleware('role:Admin');
 Route::get('/resident/create', [ResidentController::class, 'create'])->middleware('role:Admin');
 Route::get('/resident/{id}', [ResidentController::class, 'edit'])->middleware('role:Admin');
@@ -33,9 +52,12 @@ Route::post('/profil/{id}', [UserController::class, 'update_profil'])->middlewar
 Route::get('/ubah-pw', [UserController::class, 'ubah_pw'])->middleware('role:Admin,User');
 Route::post('/ubah-pw/{id}', [UserController::class, 'ubah_pww'])->middleware('role:Admin,User');
 
+
 Route::get('/complaint', [ComplaintController::class, 'index'])->middleware('role:Admin,User');
 Route::get('/complaint/create', [ComplaintController::class, 'create'])->middleware('role:User');
 Route::get('/complaint/{id}', [ComplaintController::class, 'edit'])->middleware('role:User');
 Route::post('/complaint', [ComplaintController::class, 'store'])->middleware('role:User');
 Route::put('/complaint/{id}', [ComplaintController::class, 'update'])->middleware('role:User');
 Route::delete('/complaint/{id}', [ComplaintController::class, 'destroy'])->middleware('role:User');
+Route::post('complaint/update-status/{id}', [ComplaintController::class, 'update_status'])->middleware('role:Admin');
+

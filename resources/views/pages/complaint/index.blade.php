@@ -3,10 +3,32 @@
  @section('content')
  <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Aduan</h1>
+            <h1 class="h3 mb-0 text-gray-800">{{auth()->user()->role_id == \App\Models\Role::ROLE_ADMIN ? 'Aduan Warga' : 'Aduan'}}</h1>
+            @if (isset(auth()->user()->resident))
             <a href="/complaint/create" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                     class="fas fa-plus fa-sm text-white-50"></i>Buat Aduan</a>
+            @endif
         </div>
+
+        @if (session('success'))
+            <script>
+                Swal.fire({
+                    title: "Berhasil!",
+                    text: "{{ session()->get('success')}}",
+                    icon: "success"
+                });
+            </script>
+        @endif
+
+        @if (session('error'))
+            <script>
+                Swal.fire({
+                    title: "Terjadi Kesalahan!",
+                    text: "{{ session()->get('error')}}",
+                    icon: "error"
+                });
+            </script>
+        @endif
 
         <div class="row">
             <div class="col">
@@ -16,6 +38,9 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
+                                    @if (auth()->user()->role_id == \App\Models\Role::ROLE_ADMIN)
+                                        <th>Nama Warga</th>
+                                    @endif
                                     <th>Judul</th>
                                     <th>Isi Aduan</th>
                                     <th>Status</th>
@@ -37,9 +62,12 @@
                                 @foreach ($complaints as $item)
                                  <tr>
                                     <td>{{ $loop->iteration + $complaints->firstItem() - 1 }}</td>
+                                    @if (auth()->user()->role_id == \App\Models\Role::ROLE_ADMIN)
+                                        <td>{{$item->resident->nama}}</td>
+                                    @endif
                                     <td>{{ $item->title }}</td>
                                     <td>{!! wordwrap($item->content,50,"<br>\n") !!}</td>
-                                    <td>{{ $item->status_label }}</td>
+                                    <td><span class="badge badge-{{$item->status_color}}">{{ $item->status_label }}</span></td>
                                     <td>
                                         @if (isset($item->photo_proof))
                                             @php
@@ -55,6 +83,7 @@
                                     </td>
                                     <td>{{ $item->report_date_label}}</td>
                                     <td>
+                                        @if (auth()->user()->role_id == \App\Models\Role::ROLE_USER && isset(auth()->user()->resident) && $item->status == 'baru')
                                         <div class="d-flex align-items-center" style="gap: 10px;">
                                             <a href="/complaint/{{ $item->id }}" class="d-inline block btn btn-sm btn-warning">
                                                 <i class="fas fa-pen"></i>
@@ -62,16 +91,40 @@
                                             <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#konfirmasiDelete-{{ $item->id }}">
                                                 <i class="fas fa-eraser"></i>
                                             </button>
-                                            {{-- @if (!is_null($item->user_id))
-                                                <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#detailAkun-{{ $item->id }}">
-                                                Lihat Akun
-                                                </button>
-                                            @endif --}}
                                         </div>
+                                        @elseif(auth()->user()->role_id == \App\Models\Role::ROLE_ADMIN)
+                                        <div>
+                                            <form id="formChangeStatus-{{$item->id}}" action="complaint/update-status/{{$item->id}}" method="post">
+                                            @csrf
+                                            @method('POST')
+                                            <div class="form-group">
+                                                <select name="status" id="status" class="form-control" style="min-width: 150px;" oninput="document.getElementById('formChangeStatus-{{$item->id}}').submit()">
+                                                    @foreach ([
+                                                        (object) [
+                                                            'label' => 'Baru',
+                                                            'value' => 'baru',
+                                                        ],
+                                                        (object) [
+                                                            'label' => 'Sedang proses',
+                                                            'value' => 'diproses',
+                                                        ],
+                                                        (object) [
+                                                            'label' => 'Selesai',
+                                                            'value' => 'selesai',
+                                                        ],
+                                                    ] as $status)
+                                                    <option value="{{$status->value}}" @selected($item->status == $status->value)>{{$status->label}}</option>
+                                                        
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </form>
+                                        </div>
+
+                                        @endif
                                     </td>
                                  </tr>   
                                  @include('pages.complaint.konfirmasi-delete')
-                                 @include('pages.resident.detail-akun')
                                 @endforeach
                                 
                             </tbody>
