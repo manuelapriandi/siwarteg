@@ -72,7 +72,12 @@ class AuthController extends Controller
         $validated = $request->validate([
             'name' => ['required'],
             'email' => ['required', 'email'],
-            'password' => ['required']
+            'password' => ['required'],
+        ], [
+            'name.required' => 'Tolong isi nama lengkap anda',
+            'email.required' => 'Tolong isi email anda',
+            'email.email' => 'Email tidak valid',
+            'password.required' => 'Tolong isi password anda',
         ]);
 
         $user = new User();
