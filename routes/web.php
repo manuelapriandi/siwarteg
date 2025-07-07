@@ -12,9 +12,13 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/register', [AuthController::class, 'registerView']);
 Route::post('/register', [AuthController::class, 'register']);
 
-Route::get('/dasbor', function () {
-    return view('pages.dasbor');
-})->middleware('role:Admin,User');
+// Route::get('/dasbor', function () {
+//     return view('pages.dasbor');
+// })->middleware('role:Admin,User');
+
+Route::get('/dasbor', [ComplaintController::class, 'dashboard'])
+    ->middleware('role:Admin,User')
+    ->name('dasbor');
 
 Route::post('/notification/{id}/read', function($id){
     $notification = \Illuminate\Support\Facades\DB::table('notifications')->where('id', $id);

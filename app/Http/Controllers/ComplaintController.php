@@ -138,4 +138,29 @@ class ComplaintController extends Controller
 
         return redirect('/complaint')->with('success', 'Berhasil mengubah status aduan');
     }
+
+    // ComplaintController.php
+    public function dashboard()
+    {
+        $user = Auth::user();
+        $query = Complaint::query();
+
+        // Filter untuk warga (hanya lihat aduannya sendiri)
+        if ($user->role_id == \App\Models\Role::ROLE_USER && $user->resident) {
+            $query->where('resident_id', $user->resident->id);
+        }
+
+        return view('pages.dasbor', [
+            // Total aduan
+            'totalAduan' => $query->count(),
+            
+            // Breakdown status
+            'aduanBaru' => $query->where('status', 'baru')->count(),
+            'aduanDiproses' => $query->where('status', 'diproses')->count(),
+            'aduanSelesai' => $query->where('status', 'selesai')->count(),
+            
+            // Aduan terbaru (5 data)
+            'aduanTerbaru' => $query->latest()->take(5)->get()
+        ]);
+    }
 }
