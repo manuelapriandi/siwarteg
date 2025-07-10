@@ -6,6 +6,7 @@ use App\Models\Resident;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
@@ -61,9 +62,24 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required|min:3',
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
         $user = User::findOrFail($userId);
+
+        if ($request->hasFile('profile_picture')) {
+            // Delete the old profile picture if it exists
+            if ($user->profile_picture) {
+                // Ensure the path is correct if your old pictures are in a specific subfolder
+                Storage::disk('public')->delete($user->profile_picture);
+            }
+
+            // Store the new picture in the 'profile_pictures' folder within 'storage/app/public'
+            // The 'public' disk is configured to use storage/app/public
+            $path = $request->file('profile_picture')->store('profile_pictures', 'public');
+            $user->profile_picture = $path; // Save the path to the database
+        }
+
         $user->name = $request->input('name');
         $user->save();
 

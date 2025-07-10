@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Resident extends Model
 {
     protected $table = 'residents';
+
+    use HasFactory;
 
     protected $guarded = [];
 
@@ -16,5 +19,10 @@ class Resident extends Model
 
     public function complaints(){
         return $this->hasMany(Complaint::class);
+    }
+
+    public function ktpSubmissions()
+    {
+        return $this->hasMany(KtpSubmission::class);
     }
 }

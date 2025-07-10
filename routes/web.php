@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ComplaintController;
+use App\Http\Controllers\KtpSubmissionController;
 use App\Http\Controllers\ResidentController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\RoleMiddleware; // <<< PENTING: Import RoleMiddleware Anda
 
 Route::get('/', [AuthController::class, 'login']);
 Route::post('/login', [AuthController::class, 'authenticate']);
@@ -22,14 +24,22 @@ Route::get('/dasbor', [ComplaintController::class, 'dashboard'])
 
 Route::post('/notification/{id}/read', function($id){
     $notification = \Illuminate\Support\Facades\DB::table('notifications')->where('id', $id);
-    $notification->update([    
+    $notification->update([
         'read_at' => \Illuminate\Support\Facades\DB::raw('CURRENT_TIMESTAMP'),
     ]);
 
     $dataArray = json_decode($notification->firstOrFail()->data, true);
 
+     if (isset($dataArray['type'])) {
+        if ($dataArray['type'] == 'ktp_submission_status_changed' && isset($dataArray['ktp_submission_id'])) {
+            // UBAH DARI .show KE .index UNTUK KTP SUBMISSION
+            return redirect('ktp-submission');
+        }
+    }
+
     if (isset($dataArray['complaint_id'])){
         return redirect('/complaint');
+    
     }
 
     return back();
@@ -65,3 +75,28 @@ Route::put('/complaint/{id}', [ComplaintController::class, 'update'])->middlewar
 Route::delete('/complaint/{id}', [ComplaintController::class, 'destroy'])->middleware('role:User');
 Route::post('complaint/update-status/{id}', [ComplaintController::class, 'update_status'])->middleware('role:Admin');
 
+
+// --- Rute untuk Pengajuan KTP (KtpSubmission) ---
+// Note: Middleware 'role' menggunakan string nama role, sesuai dengan implementasi RoleMiddleware.php Anda.
+
+// Menampilkan daftar semua pengajuan KTP (Index)
+// Bisa diakses oleh 'Admin' dan 'User'
+Route::get('/ktp-submission', [KtpSubmissionController::class, 'index'])->middleware('role:Admin,User');
+
+// Menampilkan form untuk membuat pengajuan KTP baru (Create)
+// Hanya bisa diakses oleh 'User' (karena admin tidak mengajukan)
+Route::get('/ktp-submission/create', [KtpSubmissionController::class, 'create'])->middleware('role:User');
+
+Route::post('/ktp-submission', [KtpSubmissionController::class, 'store'])->middleware('role:User');
+Route::get('/ktp-submission/{id}/edit', [KtpSubmissionController::class, 'edit'])->middleware('role:User');
+
+// Memperbarui data pengajuan KTP di database (Update)
+// Hanya bisa diakses oleh 'User'
+Route::put('/ktp-submission/{id}', [KtpSubmissionController::class, 'update'])->middleware('role:User');
+
+// Menghapus pengajuan KTP (Destroy)
+// Hanya bisa diakses oleh 'User'
+Route::delete('/ktp-submission/{id}', [KtpSubmissionController::class, 'destroy'])->middleware('role:User');
+
+// Mengubah status pengajuan KTP (khusus Admin)
+Route::post('/ktp-submission/update-status/{id}', [KtpSubmissionController::class, 'update_status'])->middleware('role:Admin');

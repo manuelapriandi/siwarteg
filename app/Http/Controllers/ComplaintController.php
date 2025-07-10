@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Complaint;
+use App\Models\KtpSubmission;
 use App\Models\User;
 use App\Notifications\ComplaintStatusChanged;
 use Illuminate\Http\Request;
@@ -141,26 +142,50 @@ class ComplaintController extends Controller
 
     // ComplaintController.php
     public function dashboard()
-    {
-        $user = Auth::user();
+{
+    $user = Auth::user();
+    
+    // Fungsi untuk membuat query dasar
+    function getBaseQuery($user) {
         $query = Complaint::query();
-
+        
         // Filter untuk warga (hanya lihat aduannya sendiri)
         if ($user->role_id == \App\Models\Role::ROLE_USER && $user->resident) {
             $query->where('resident_id', $user->resident->id);
         }
-
-        return view('pages.dasbor', [
-            // Total aduan
-            'totalAduan' => $query->count(),
-            
-            // Breakdown status
-            'aduanBaru' => $query->where('status', 'baru')->count(),
-            'aduanDiproses' => $query->where('status', 'diproses')->count(),
-            'aduanSelesai' => $query->where('status', 'selesai')->count(),
-            
-            // Aduan terbaru (5 data)
-            'aduanTerbaru' => $query->latest()->take(5)->get()
-        ]);
+        
+        return $query;
     }
+
+    function getBaseKtpSubmissionQuery($user) { // <<< Tambahkan fungsi query dasar untuk KtpSubmission
+            $query = KtpSubmission::query();
+
+            // Filter untuk warga (hanya lihat pengajuannya sendiri)
+            if ($user->role_id == \App\Models\Role::ROLE_USER && $user->resident) {
+                $query->where('resident_id', $user->resident->id);
+            }
+
+            return $query;
+        }
+
+    return view('pages.dasbor', [
+        // Total aduan
+        'totalAduan' => getBaseQuery($user)->count(),
+        
+        // Breakdown status
+        'aduanBaru' => getBaseQuery($user)->where('status', 'baru')->count(),
+        'aduanDiproses' => getBaseQuery($user)->where('status', 'diproses')->count(),
+        'aduanSelesai' => getBaseQuery($user)->where('status', 'selesai')->count(),
+        
+        // Aduan terbaru (5 data)
+        'aduanTerbaru' => getBaseQuery($user)->latest()->take(5)->get(),
+
+        'totalKtpSubmissions' => getBaseKtpSubmissionQuery($user)->count(),
+        'ktpSubmissionsBaru' => getBaseKtpSubmissionQuery($user)->where('status', 'baru')->count(),
+        'ktpSubmissionsDiproses' => getBaseKtpSubmissionQuery($user)->where('status', 'diproses')->count(),
+        'ktpSubmissionsSelesai' => getBaseKtpSubmissionQuery($user)->where('status', 'selesai')->count(),
+        'ktpSubmissionsDitolak' => getBaseKtpSubmissionQuery($user)->where('status', 'ditolak')->count(),
+        'ktpSubmissionsTerbaru' => getBaseKtpSubmissionQuery($user)->latest()->take(5)->get(),
+    ]);
+}
 }
