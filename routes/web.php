@@ -75,18 +75,12 @@ Route::put('/complaint/{id}', [ComplaintController::class, 'update'])->middlewar
 Route::delete('/complaint/{id}', [ComplaintController::class, 'destroy'])->middleware('role:User');
 Route::post('complaint/update-status/{id}', [ComplaintController::class, 'update_status'])->middleware('role:Admin');
 
-
-// --- Rute untuk Pengajuan KTP (KtpSubmission) ---
-// Note: Middleware 'role' menggunakan string nama role, sesuai dengan implementasi RoleMiddleware.php Anda.
-
-// Menampilkan daftar semua pengajuan KTP (Index)
-// Bisa diakses oleh 'Admin' dan 'User'
 Route::get('/ktp-submission', [KtpSubmissionController::class, 'index'])->middleware('role:Admin,User');
 
 // Menampilkan form untuk membuat pengajuan KTP baru (Create)
 // Hanya bisa diakses oleh 'User' (karena admin tidak mengajukan)
 Route::get('/ktp-submission/create', [KtpSubmissionController::class, 'create'])->middleware('role:User');
-
+Route::get('/ktp-submission/{ktp_submission}', [App\Http\Controllers\KtpSubmissionController::class, 'show'])->name('ktp-submission.show');
 Route::post('/ktp-submission', [KtpSubmissionController::class, 'store'])->middleware('role:User');
 Route::get('/ktp-submission/{id}/edit', [KtpSubmissionController::class, 'edit'])->middleware('role:User');
 

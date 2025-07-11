@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon; // Pastikan Carbon diimpor jika belum
 
 class KtpSubmission extends Model
 {
@@ -41,9 +42,23 @@ class KtpSubmission extends Model
         };
     }
 
-    // Anda mungkin juga butuh accessor untuk tanggal pengajuan yang diformat
+    // Accessor untuk label jenis pengajuan (INI YANG HILANG)
+    public function getSubmissionTypeLabelAttribute()
+{
+    return match ($this->submission_type) {
+        'KK' => 'Kartu Keluarga',
+        'KTP' => 'Kartu Tanda Penduduk',
+        'akta kelahiran' => 'Akta Kelahiran',
+        'akta kematian' => 'Akta Kematian',
+        'SKCK' => 'SKCK',
+        default => 'Tidak Diketahui',
+    };
+}
+
+    // Accessor untuk tanggal pengajuan yang diformat
     public function getSubmissionDateLabelAttribute()
     {
-        return \Carbon\Carbon::parse($this->submission_date)->format('d M Y, H:i:s');
+        // Pastikan kolom 'submission_date' ada di tabel database Anda
+        return Carbon::parse($this->created_at)->format('d M Y, H:i:s'); // Biasanya pakai created_at untuk tanggal pengajuan
     }
 }

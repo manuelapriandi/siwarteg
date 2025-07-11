@@ -97,9 +97,7 @@ class KtpSubmissionController extends Controller
 
     public function show($id)
     {
-        // Optional: Implement a show method for viewing single submission details
         $ktpSubmission = KtpSubmission::findOrFail($id);
-        // Authorization check if needed: ensure user can view this submission
         if (Auth::user()->role_id == Role::ROLE_USER && $ktpSubmission->resident->user_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
@@ -137,8 +135,8 @@ class KtpSubmissionController extends Controller
             'submission_type' => ['required', Rule::in([
                 'KK',
                 'KTP',
-                'akta kelahiran',
-                'akta kematian',
+                'Akta Kelahiran',
+                'Akta Kematian',
                 'SKCK'
             ])],
             'notes' => ['nullable', 'string', 'max:2000'],

@@ -52,7 +52,8 @@
                 <h6 class="dropdown-header">
                     Notifikasi Warga
                 </h6>
-                @foreach (auth()->user()->notifications as $notification)
+                {{-- Hanya tampilkan 3 notifikasi terbaru --}}
+                @foreach (auth()->user()->notifications()->latest()->take(3)->get() as $notification)
                     @if (is_null($notification->read_at))
                     <form id="formNotification-{{ $notification->id }}" action="/notification/{{$notification->id}}/read" method="post">
                         <div class="dropdown-item d-flex align-items-center" style="background-color: rgba(115, 194, 251, 0.13); cursor: pointer;"
@@ -81,7 +82,7 @@
                                 <div class="small text-gray-500">{{$notification->created_at->diffForHumans() }}</div>
                                 <span class="font-weight-bold">{{$notification->data['message']}}</span>
                             </div>
-                        </div>
+                    </div>
 
                     @endif
                 @endforeach

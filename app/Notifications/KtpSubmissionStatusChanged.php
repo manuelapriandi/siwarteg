@@ -50,12 +50,14 @@ class KtpSubmissionStatusChanged extends Notification
      *
      * @return array<string, mixed>
      */
+    // app/Notifications/KtpSubmissionStatusChanged.php
+
     public function toArray(object $notifiable): array
     {
         return [
-            'type' => 'ktp_submission_status_changed', // <<< Tambahkan type untuk identifikasi
+            'type' => 'ktp_submission_status_changed',
             'ktp_submission_id' => $this->ktpSubmission->id,
-            'submission_type' => $this->ktpSubmission->submission_type_label, // Menggunakan accessor
+            'submission_type' => $this->ktpSubmission->submission_type_label,
             'old_status' => $this->oldStatusLabel,
             'new_status' => $this->newStatusLabel,
             'message' => "Status pengajuan berkas '{$this->ktpSubmission->submission_type_label}' Anda berubah dari {$this->oldStatusLabel} menjadi {$this->newStatusLabel}.",

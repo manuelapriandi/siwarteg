@@ -85,7 +85,7 @@
                     <div class="card-footer bg-light border-0 pt-3 pb-4 d-flex justify-content-end rounded-bottom">
                         <div class="d-flex" style="gap: 10px">
                             <a href="/dasbor" class="btn btn-outline-secondary btn-lg">
-                                Batal
+                                Kembali
                             </a>
                             <button type="submit" class="btn btn-warning btn-lg">
                                 Simpan Perubahan
