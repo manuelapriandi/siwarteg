@@ -183,11 +183,11 @@
         letter-spacing: 0.2px;
     }
     /* Pastikan warna badge sesuai dengan Bootstrap default */
-    .badge-primary { background-color: var(--bs-primary) !important; }
-    .badge-info { background-color: var(--bs-info) !important; }
-    .badge-warning { background-color: var(--bs-warning) !important; }
-    .badge-success { background-color: var(--bs-success) !important; }
-    .badge-danger { background-color: var(--bs-danger) !important; }
+    .badge-primary { background-color: var(--primary) !important; }
+    .badge-info { background-color: var(--info) !important; }
+    .badge-warning { background-color: var(--warning) !important; }
+    .badge-success { background-color: var(--success) !important; }
+    .badge-danger { background-color: var(--danger) !important; }
 
 
     /* Aksi Tombol di Tabel */

@@ -315,7 +315,7 @@
                                         <td>{{ $item->notelp }}</td>
                                         <td>{{ $item->status }}</td>
                                         <td>
-                                            <div class="d-flex align-items-center"> <a href="/resident/{{ $item->id }}/edit" class="btn btn-sm btn-warning"> <i class="fas fa-pen"></i>
+                                            <div class="d-flex align-items-center"> <a href="/resident/{{ $item->id }}" class="btn btn-sm btn-warning"> <i class="fas fa-pen"></i>
                                                 </a>
                                                 <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#konfirmasiDelete-{{ $item->id }}">
                                                     <i class="fas fa-eraser"></i>

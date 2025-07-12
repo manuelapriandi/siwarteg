@@ -49,6 +49,32 @@
         .input-group-text:hover {
             background-color: #e9ecef;
         }
+
+        /* --- CSS Tambahan untuk Efek Ketikan --- */
+        .typing-container {
+            display: inline-block; /* Agar lebar sesuai konten */
+            overflow: hidden; /* Sembunyikan teks yang belum diketik */
+            white-space: nowrap; /* Pastikan teks tidak patah baris */
+            border-right: .15em solid orange; /* Cursor typing */
+            animation: 
+                typing 3.5s steps(30, end) forwards, /* Animasi ketikan */
+                blink-caret .75s step-end infinite; /* Animasi kursor */
+            width: 0; /* Mulai dari lebar 0 */
+            vertical-align: middle; /* Pastikan rata tengah dengan teks lain jika ada */
+        }
+
+        /* Animasi Ketikan */
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% } /* Lebar penuh setelah selesai mengetik */
+        }
+
+        /* Animasi Kursor berkedip */
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: orange }
+        }
+        /* --- Akhir CSS Tambahan --- */
     </style>
 </head>
 
@@ -75,7 +101,7 @@
                             <div class="col-lg-6 p-5">
                                 <div class="text-center mb-4">
                                     <h1 class="h4 text-gray-900 mb-3 welcome-text">Selamat Datang di Web</h1>
-                                    <h2 class="h4 text-gray-900 mb-4"><b>Siaga Warga Tetangga!</b></h2>
+                                    <h2 class="h4 text-gray-900 mb-4"><b><span id="siagaWargaTetanggaText" class="typing-container">Siaga Warga Tetangga!</span></b></h2>
                                 </div>
                                 <form class="user" action="/login" method="POST" onsubmit="const submitBtn = document.getElementById('submitBtn'); submitBtn.disabled = true; submitBtn.textContent = 'Memuat...'">
                                     @csrf
@@ -141,6 +167,13 @@
                     icon.removeClass('fa-eye-slash').addClass('fa-eye');
                 }
             });
+
+            // --- JavaScript Tambahan untuk Efek Ketikan (opsional jika kamu ingin lebih banyak kontrol) ---
+            // Saat ini, efek ketikan murni CSS. Jika ingin menambahkan variasi atau interaksi, 
+            // kamu bisa menggunakan JavaScript. Namun, untuk efek dasar, CSS sudah cukup.
+            // Contohnya, jika kamu ingin mengatur ulang animasi atau mengganti teks secara dinamis.
+            // Biarkan saja seperti ini, karena CSS sudah menangani animasinya.
+            // --- Akhir JavaScript Tambahan ---
         });
     </script>
 </body>

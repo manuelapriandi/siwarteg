@@ -225,4 +225,34 @@ class KtpSubmissionController extends Controller
         return redirect('/ktp-submission')->with('success', 'Berhasil mengubah status pengajuan berkas.');
     }
 
+    public function uploadCoverLetter(Request $request, $id)
+{
+    // 1. Authorization: Only admins can perform this action
+    if (Auth::user()->role_id != Role::ROLE_ADMIN) {
+        abort(403, 'Unauthorized action.');
+    }
+
+    // 2. Validation: Ensure a PDF file is uploaded
+    $request->validate([
+        'surat_pengantar' => ['required', 'file', 'mimes:pdf', 'max:2048'], // 2MB Max
+    ]);
+
+    $ktpSubmission = KtpSubmission::findOrFail($id);
+
+    // 3. Delete old file if it exists to prevent orphaned files
+    if ($ktpSubmission->surat_pengantar_path) {
+        Storage::disk('public')->delete($ktpSubmission->surat_pengantar_path);
+    }
+
+    // 4. Store the new file and get its path
+    $filePath = $request->file('surat_pengantar')->store('surat_pengantar', 'public');
+
+    // 5. Update the database record with the new file path
+    $ktpSubmission->surat_pengantar_path = $filePath;
+    $ktpSubmission->save();
+
+    // 6. Redirect back with a success message
+    return redirect('/ktp-submission')->with('success', 'Berhasil mengunggah Surat Pengantar.');
+}
+
 }

@@ -14,10 +14,6 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::get('/register', [AuthController::class, 'registerView']);
 Route::post('/register', [AuthController::class, 'register']);
 
-// Route::get('/dasbor', function () {
-//     return view('pages.dasbor');
-// })->middleware('role:Admin,User');
-
 Route::get('/dasbor', [ComplaintController::class, 'dashboard'])
     ->middleware('role:Admin,User')
     ->name('dasbor');
@@ -30,7 +26,7 @@ Route::post('/notification/{id}/read', function($id){
 
     $dataArray = json_decode($notification->firstOrFail()->data, true);
 
-     if (isset($dataArray['type'])) {
+    if (isset($dataArray['type'])) {
         if ($dataArray['type'] == 'ktp_submission_status_changed' && isset($dataArray['ktp_submission_id'])) {
             // UBAH DARI .show KE .index UNTUK KTP SUBMISSION
             return redirect('ktp-submission');
@@ -39,7 +35,6 @@ Route::post('/notification/{id}/read', function($id){
 
     if (isset($dataArray['complaint_id'])){
         return redirect('/complaint');
-    
     }
 
     return back();
@@ -75,22 +70,19 @@ Route::put('/complaint/{id}', [ComplaintController::class, 'update'])->middlewar
 Route::delete('/complaint/{id}', [ComplaintController::class, 'destroy'])->middleware('role:User');
 Route::post('complaint/update-status/{id}', [ComplaintController::class, 'update_status'])->middleware('role:Admin');
 
+// Rute-rute KtpSubmission
 Route::get('/ktp-submission', [KtpSubmissionController::class, 'index'])->middleware('role:Admin,User');
-
-// Menampilkan form untuk membuat pengajuan KTP baru (Create)
-// Hanya bisa diakses oleh 'User' (karena admin tidak mengajukan)
 Route::get('/ktp-submission/create', [KtpSubmissionController::class, 'create'])->middleware('role:User');
-Route::get('/ktp-submission/{ktp_submission}', [App\Http\Controllers\KtpSubmissionController::class, 'show'])->name('ktp-submission.show');
+Route::get('/ktp-submission/{ktp_submission}', [KtpSubmissionController::class, 'show'])->name('ktp-submission.show');
 Route::post('/ktp-submission', [KtpSubmissionController::class, 'store'])->middleware('role:User');
 Route::get('/ktp-submission/{id}/edit', [KtpSubmissionController::class, 'edit'])->middleware('role:User');
-
-// Memperbarui data pengajuan KTP di database (Update)
-// Hanya bisa diakses oleh 'User'
 Route::put('/ktp-submission/{id}', [KtpSubmissionController::class, 'update'])->middleware('role:User');
-
-// Menghapus pengajuan KTP (Destroy)
-// Hanya bisa diakses oleh 'User'
 Route::delete('/ktp-submission/{id}', [KtpSubmissionController::class, 'destroy'])->middleware('role:User');
-
-// Mengubah status pengajuan KTP (khusus Admin)
 Route::post('/ktp-submission/update-status/{id}', [KtpSubmissionController::class, 'update_status'])->middleware('role:Admin');
+Route::post('/ktp-submission/{id}/upload-surat', [KtpSubmissionController::class, 'uploadCoverLetter'])
+    ->name('ktp-submission.uploadCoverLetter')
+    ->middleware('role:Admin');
+// >>> TAMBAHKAN RUTE INI UNTUK FUNGSI DOWNLOAD
+// Route::get('/ktp-submission/{id}/download-letter', [KtpSubmissionController::class, 'downloadLetter'])
+//     ->name('ktp-submission.download-letter') // Beri nama rute ini
+//     ->middleware('role:Admin,User'); // Sesuaikan middleware otorisasi Anda

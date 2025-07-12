@@ -307,7 +307,7 @@
         font-size: 0.85rem; /* Ukuran font dropdown */
         border-radius: 8px; /* Sudut dropdown membulat */
         border: 1px solid var(--border-main); /* Border dropdown */
-        background-color: var(--background-body); /* Latar belakang dropdown */
+        background-color: var(--background-body);
         color: var(--text-dark);
         padding: 0.5rem 1rem; /* Padding dropdown */
         height: auto; /* Agar padding bekerja */
@@ -508,13 +508,21 @@
     <div class="col">
         <div class="card shadow mb-4"> {{-- Tambahkan mb-4 agar ada jarak dengan tabel di bawah --}}
             <div class="card-header py-3">
-                <h3 class="m-0 font-weight-bold text-primary" style="text-align: center;">{{ auth()->user()->role_id == \App\Models\Role::ROLE_ADMIN ? 'KETENTUAN PENGECEKAN AJUAN BERKAS DARI WARGA' : 'SYARAT PENGAJUAN BERKAS UNTUK SURAT PENGANTAR' }}</h3>
-                
-                @if (auth()->user()->role_id == \App\Models\Role::ROLE_ADMIN)
-                <h5 style="color:red; text-align: center; margin-top: 10px"><b>Catatan: Sistem telah menyarankan bahwa warga bisa mengirim seluruh persyaratan di 1 pdf agar<br> memudahkan pengecekan,dan bisa juga dikirim satu-persatu baik dengan file pdf/foto.</b></h5>
-                @else
-                <h5 style="color:red; text-align: center; margin-top: 10px"><b>Catatan: Seluruh persyaratan disarankan dibuat menjadi 1 pdf agar memudahkan pengecekan,<br>dan bisa juga mengirim satu-persatu baik dengan file pdf/foto.</b></h5>
-                @endif
+                <div class="highlighted-note-box">
+                    <h3 class="m-0 font-weight-bold text-primary">
+                        {{ auth()->user()->role_id == \App\Models\Role::ROLE_ADMIN ? 'KETENTUAN PENGECEKAN AJUAN BERKAS DARI WARGA' : 'SYARAT PENGAJUAN BERKAS UNTUK SURAT PENGANTAR' }}
+                    </h3>
+
+                    @if (auth()->user()->role_id == \App\Models\Role::ROLE_ADMIN)
+                    <h5 class="note-text">
+                        <b>Catatan: Sistem telah menyarankan bahwa warga bisa mengirim seluruh persyaratan di 1 pdf agar<br> memudahkan pengecekan,dan bisa juga dikirim satu-persatu baik dengan file pdf/foto.</b>
+                    </h5>
+                    @else
+                    <h5 class="note-text">
+                        <b>Catatan: Seluruh persyaratan disarankan dibuat menjadi 1 pdf agar mempermudah pengecekan,<br>dan bisa juga mengirim satu-persatu baik dengan file pdf/foto.</b>
+                    </h5>
+                    @endif
+                </div>
                 <h5 style="margin-top: 10px; margin-left: 20px">Surat Pengantar Pembuatan KK:</h5>
                 <ul style="margin-left: 20px">
                     <li>Scan KTP-el (KTP Fisik)</li>
@@ -539,6 +547,33 @@
                 </ul>
             </div>
         </div>
+        
+        {{-- Bagian baru untuk Admin (RT/RW) --}}
+        @if (auth()->user()->role_id == \App\Models\Role::ROLE_ADMIN)
+        <div class="card shadow mb-4">
+            <a href="#collapseTemplateManager" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseTemplateManager">
+                <h6 class="m-0 font-weight-bold text-primary">Template Surat Pengantar</h6>
+            </a>
+            <div class="collapse show" id="collapseTemplateManager"> {{-- 'show' agar terbuka secara default --}}
+                <div class="card-body">
+                    <p>Di sini Anda dapat mengelola template surat pengantar untuk pengajuan KTP. Anda bisa mengedit template secara online melalui Google Docs atau mengunduhnya untuk pengisian di MS Word.</p>
+                    <div class="d-flex" style="gap: 10px;"> {{-- Menggunakan flexbox dengan jarak antar tombol --}}
+                        <a href="https://docs.google.com/document/d/1TIrNKwV_Zi2XxKuYJ0v3v-e7fa8c8Ei1VwFTZjyJRTk/edit?usp=sharing" target="_blank" class="btn btn-info shadow-sm">
+                            <i class="fas fa-edit fa-sm text-white-50"></i> Edit Online Template (Google Docs)
+                        </a>
+                        <a href="https://docs.google.com/document/d/1TIrNKwV_Zi2XxKuYJ0v3v-e7fa8c8Ei1VwFTZjyJRTk/export?format=docx" class="btn btn-primary shadow-sm" download="Surat_Pengantar_KTP_Template.docx">
+                            <i class="fas fa-download fa-sm text-white-50"></i> Download Template (DOCX)
+                        </a>
+                    </div>
+                    <small class="text-muted mt-3 d-block">
+                        * Untuk opsi 'Edit Online Template', Anda akan diarahkan ke Google Docs. Pastikan Anda memiliki izin akses untuk mengedit dokumen tersebut.
+                        <br>
+                        ** Untuk opsi 'Download Template (DOCX)', file akan langsung diunduh ke perangkat Anda.
+                    </small>
+                </div>
+            </div>
+        </div>
+        @endif
         
         <div class="card shadow">
             <div class="card-header py-3">
@@ -616,6 +651,13 @@
                                             <i class="fas fa-comment-alt"></i> Catatan RT/RW
                                         </button>
                                         @endif
+                                        {{-- TOMBOL DOWNLOAD SURAT PENGANTAR UNTUK USER --}}
+                                        @if ($item->surat_pengantar_path)
+                                            <a href="{{ asset('storage/' . $item->surat_pengantar_path) }}" class="btn btn-sm btn-success" download title="Download Surat Pengantar">
+                                                <i class="fas fa-download"></i> Download Surat
+                                            </a>
+                                        @endif
+
                                     </div>
                                     @elseif(auth()->user()->role_id == \App\Models\Role::ROLE_ADMIN)
                                     <div>
@@ -639,6 +681,31 @@
                                                 <button type="submit" class="btn btn-primary btn-sm mt-2">Update Status</button>
                                             </div>
                                         </form>
+                                        {{-- FORM UPLOAD SURAT PENGANTAR UNTUK ADMIN (Hanya jika status 'Selesai') --}}
+                                        @if ($item->status == 'selesai')
+                                            <hr>
+                                            {{-- Tampilkan link file yang sudah ada --}}
+                                            @if ($item->surat_pengantar_path)
+                                                <div class="mb-2">
+                                                    <a href="{{ asset('storage/' . $item->surat_pengantar_path) }}" target="_blank">
+                                                        <i class="fas fa-check-circle text-success"></i> Surat Telah Diunggah. Lihat/Ganti File.
+                                                    </a>
+                                                </div>
+                                            @endif
+                                            {{-- Form untuk upload/ganti file --}}
+                                            <form action="{{ route('ktp-submission.uploadCoverLetter', $item->id) }}" method="POST" enctype="multipart/form-data">
+                                                @csrf
+                                                <div class="form-group">
+                                                    <label for="surat_pengantar-{{ $item->id }}" class="form-label small mb-1">
+                                                        {{ $item->surat_pengantar_path ? 'Ganti' : 'Upload' }} Surat Pengantar (PDF):
+                                                    </label>
+                                                    <input type="file" name="surat_pengantar" id="surat_pengantar-{{ $item->id }}" class="form-control form-control-sm" required accept=".pdf">
+                                                </div>
+                                                <button type="submit" class="btn btn-info btn-sm mt-2">
+                                                    <i class="fas fa-upload"></i> Simpan Surat
+                                                </button>
+                                            </form>
+                                        @endif
                                     </div>
                                     @endif
                                 </td>

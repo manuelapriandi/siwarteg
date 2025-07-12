@@ -388,7 +388,7 @@
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
                             <div class="card-title">
-                                {{ auth()->user()->role_id == \App\Models\Role::ROLE_ADMIN ? 'Sedang Diproses' : 'Sedang Diproses Pak RT/RW' }}
+                                {{ auth()->user()->role_id == \App\Models\Role::ROLE_ADMIN ? 'Sedang Diproses' : 'Diproses Pak RT/RW' }}
                             </div>
                             <div class="card-value">{{ $aduanDiproses }}</div>
                         </div>
@@ -437,7 +437,7 @@
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
                             <div class="card-title">
-                                {{ auth()->user()->role_id == \App\Models\Role::ROLE_ADMIN ? 'Total Pengajuan Berkas' : 'Total Pengajuan Berkas Anda' }}
+                                {{ auth()->user()->role_id == \App\Models\Role::ROLE_ADMIN ? 'Total Pengajuan Berkas' : 'Total Pengajuan Berkas' }}
                             </div>
                             <div class="card-value">{{ $totalKtpSubmissions }}</div>
                         </div>
@@ -479,7 +479,7 @@
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
                             <div class="card-title">
-                                {{ auth()->user()->role_id == \App\Models\Role::ROLE_ADMIN ? 'Sedang Diproses' : 'Sedang Diproses Pak RT/RW' }}
+                                {{ auth()->user()->role_id == \App\Models\Role::ROLE_ADMIN ? 'Sedang Diproses' : 'Diproses Pak RT/RW' }}
                             </div>
                             <div class="card-value">{{ $ktpSubmissionsDiproses }}</div>
                         </div>
